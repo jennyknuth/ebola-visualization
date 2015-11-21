@@ -33,7 +33,7 @@ button {
 path {fill: none;}
 
 </style>
-
+<button onclick="clickOperation()">Switch View</button>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
@@ -42,7 +42,7 @@ d3.json("ebola_layers_data.json", function(json){
 
 // load the data from a text-file
 eboladata = json;
-// load the data for the streamgraph. 
+// load the data for the streamgraph.
 // "stack" sets us up with a data structure that has all of the info for the streamgraph
 var stack = d3.layout.stack().order('default');
 layers1 = stack(eboladata.percent);
@@ -50,7 +50,7 @@ layers1 = stack(eboladata.percent);
 formatspecifier1 = "%"
 // appropriate labels for the yaxis
 ylabel1 = "Percentage of the Conversation"
-// date handling for the data data that comes in 
+// date handling for the data data that comes in
 var dateparser = d3.time.format("%Y-%m-%d").parse;
 
 // --------------------------------------------------------------------------------------------------------- SVG Canvas
@@ -80,12 +80,12 @@ svg.append("text")
     .text("Using Twitter to Inform the Public About Ebola")
     .attr("y", top_buffer/2 + 20)
     .attr("x", axis_buffer + left_buffer)
-    .style("text-anchor", "start"); 
+    .style("text-anchor", "start");
 
 // ------------------------------------------------------------------------------------------------------------- x axis
 
 // Important events timeline at the bottom of the graph
-// I want these lines to show up behid the xaxis, so I'm appending their group first 
+// I want these lines to show up behid the xaxis, so I'm appending their group first
 var timelineinfo = svg.append("g");
 
 // Add the x-axis.
@@ -110,7 +110,7 @@ var yscale_max1 = .416;
 var y_tickValues1 = [0,.04,.08,.12,.16,.2,.24,.28,.32,.36,.4]
 var yscale = d3.scale.linear()
 // scale has to change during transition
-    .domain([0, yscale_max1]) // Hardcoded this value so I could get the y-axes to line up nicely, 
+    .domain([0, yscale_max1]) // Hardcoded this value so I could get the y-axes to line up nicely,
     // could've used:
     // .domain([0, d3.max(layers0, function(layer){ return d3.max(layer, function(d) { return d.y0 + d.y; }); })])
     .range([height, 0]);
@@ -125,18 +125,18 @@ var ylabel_left = svg.append("g")
 ylabel_left.append("text")
     .attr("class", "ylabel")
     .text(ylabel1)
-    .attr("transform", 
+    .attr("transform",
       "translate(" + (left_buffer + 90) + "," + (height/2 + top_buffer) + ") rotate(-90)")
-    .style("text-anchor", "middle"); 
+    .style("text-anchor", "middle");
 
 // ------------------------------------------------------------------------------------------- The streamgraph! Finally
 // colors to use for the streamgraph
 var color = ['#EB2022', '#1980BE', '#669900', '#141459', '#F47E00', '#808080'],
     colorhash = {};
-// note that these are global vars so that "transition" can access them later. 
+// note that these are global vars so that "transition" can access them later.
 streamgraph = svg.append("g")
 // the path generator for the streams.
-// I use a "basis" interpolation to make it prettier, but we do lose some detail. 
+// I use a "basis" interpolation to make it prettier, but we do lose some detail.
 // You can comment out the "interpolate("basis")" if you like, or chose from other interpolation options
 area = d3.svg.area().interpolate("basis")
     .x(function(d) { return x(dateparser(d.x)); })
@@ -148,8 +148,7 @@ streamgraph.selectAll("path")
     .enter().append("path")
     .attr("d", area)
     .style("fill", function(d, i) { colorhash[eboladata.names[i]] = color[i]; return color[i]; })
-    .attr("transform", "translate(" + (axis_buffer+left_buffer) + "," + top_buffer + ")"); 
-
+    .attr("transform", "translate(" + (axis_buffer+left_buffer) + "," + top_buffer + ")");
 
 // ----------------------------------------------------------------------------------------------------- Add the legend
 var legend = svg.append("g")
@@ -174,5 +173,21 @@ legend.selectAll("g")
           .style("fill", colorhash[d])
           .text(d); });
 });
+
+function clickOperation() {
+  console.log('testing');
+
+  // var title = document.getElementsByClassName("title")
+  // title[0].innerHTML="Hello"
+  d3.select(".title")
+      .transition().duration(2000)
+      .style('opacity', 0)
+      .transition()
+      .style('fill', 'red')
+      .text("Hello")
+      .transition().duration(2000)
+      .style('opacity', 100)
+      .attr("class", ".axis")
+  }
 
 </script>
